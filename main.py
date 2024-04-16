@@ -52,6 +52,15 @@ def task2():
 
     # Mallory gets in the middle
 
+    # Mallory intercepts alice public key and instead sends bob q
+
+    # Mallory intercepts bob public key and instead sends alice q
+
+    # compute shared secret key for both alice and bob (and mallory)
+
+    # return the secret key
+    return
+
 
 
 # Encrypt a message with AES-CBC, Make sure padded, Can use builtin
