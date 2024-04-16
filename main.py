@@ -41,7 +41,7 @@ def task1():
     # print(aes_key)
     return aes_key
 
-def task2():
+def task2_1():
     # Create Private Keys, chosen randomly and less than q
     bob_private_key = os.urandom(16)
     alice_private_key = os.urandom(16)
@@ -51,16 +51,35 @@ def task2():
     alice_public_key = pow(alpha, int.from_bytes(alice_private_key, 'big'), q)
 
     # Mallory gets in the middle
+    print("Mallory gets in the middle and sends bob and alice q instead of each others' public keys!")
 
     # Mallory intercepts alice public key and instead sends bob q
+    what_bob_gets = q
 
     # Mallory intercepts bob public key and instead sends alice q
+    what_alice_gets = q
 
     # compute shared secret key for both alice and bob (and mallory)
+    s_bob = pow(what_bob_gets, int.from_bytes(bob_private_key, 'big'), q)
+    s_alice = pow(what_alice_gets, int.from_bytes(alice_private_key, 'big'), q)
+    s_mallory = 0  # secret key formula gets changed to q^private_key mod q which will equal 0 always
+    # print(s_bob)
+    # print(s_alice)
+    # print(s_mallory)
+    assert s_alice == s_mallory == s_bob
+
+    shared_key = s_alice.to_bytes((s_alice.bit_length() + 7) // 8, byteorder='big')
+    aes_key = SHA256.new(shared_key).digest()[:16]
+
+    # print(aes_key)
 
     # return the secret key
-    return
+    return aes_key
 
+
+def task2_2():
+    # second part of task 2 where mallory tampers with alpha
+    return
 
 
 # Encrypt a message with AES-CBC, Make sure padded, Can use builtin
@@ -92,11 +111,15 @@ def decrypt(encrypted_message, key):
 
 
 if __name__ == '__main__':
+    print("-------------------- Task 1 --------------------")
     alice_message = "Hello Bob!"
     aes_key = task1()
     encrypted_message = encrypt(alice_message, aes_key)
     decrypted_message = decrypt(encrypted_message, aes_key)
-    print(decrypted_message)
+    print("Decrypted message: " + decrypted_message)
+
+    print("\n-------------------- Task 2 --------------------")
+    aes_key2 = task2_1()
 
 
 # Task 2, Man in the Middle attack. Mallory gets in the middle, sends Q to Bob
