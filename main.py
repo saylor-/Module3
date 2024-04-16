@@ -1,5 +1,5 @@
 import hashlib
-from Crypro.Hash import SHA256
+from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 from Crypto import Random
 from Crypto.Util.Padding import pad
@@ -10,8 +10,8 @@ from urllib.parse import quote
 import os
 
 # Define q and alpha
-q = 37
-alpha = 5
+q = 0xB10B8F96A080E01DDE92DE5EAE5D54EC52C99FBCFB06A3C69A6A9DCA52D23B616073E28675A23D189838EF1E2EE652C013ECB4AEA906112324975C3CD49B83BFACCBDD7D90C4BD7098488E9C219A73724EFFD6FAE5644738FAA31A4FF55BCCC0A151AF5F0DC8B4BD45BF37DF365C1A65E68CFDA76D4DA708DF1FB2BC2E4A4371
+alpha = 0xA4D1CBD5C3FD34126765A442EFB99905F8104DD258AC507FD6406CFF14266D31266FEA1E5C41564B777E690F5504F213160217B4B01B886A5E91547F9E2749F4D7FBD7D3B9A92EE1909D0D2263F80A76A6A24C087A091F531DBF0A0169B6A28AD662A4D18E73AFA32D779D5918D08BC8858F4DCEF97C2A24855E6EEB22B3B2E5
 
 # Create Private Keys, chosen randomly and less than q
 bob_private_key = os.urandom(16)
@@ -61,15 +61,12 @@ def decrypt(encrypted_message, key):
     return decrypted_data.decode('utf-8')
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     alice_message = "Hello Bob!"
     encrypted_message = encrypt(alice_message, aes_key)
     decrypted_message = decrypt(encrypted_message, aes_key)
     print(decrypted_message)
 
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 # Task 2, Man in the Middle attack. Mallory gets in the middle, sends Q to Bob
 # Then Bob sends public key to Mallory instead of Alice,
