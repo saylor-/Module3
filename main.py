@@ -79,7 +79,34 @@ def task2_1():
 
 def task2_2():
     # second part of task 2 where mallory tampers with alpha
-    return
+    # alpha = 1
+    print("Mallory changes alpha to 1!")
+    new_alpha = 0x1
+
+    # Create Private Keys, chosen randomly and less than q
+    bob_private_key = os.urandom(16)
+    alice_private_key = os.urandom(16)
+
+    # Compute Public Keys
+    bob_public_key = pow(new_alpha, int.from_bytes(bob_private_key, 'big'), q)
+    alice_public_key = pow(new_alpha, int.from_bytes(alice_private_key, 'big'), q)
+
+    # compute shared secret key for both alice and bob (and mallory)
+    s_bob = pow(alice_public_key, int.from_bytes(bob_private_key, 'big'), q)
+    s_alice = pow(bob_public_key, int.from_bytes(alice_private_key, 'big'), q)
+    s_mallory = 1  # secret key will always come out to 1 because both public keys will be 1 and 1^x = 1 and 1 mod x = 1
+    # print(s_bob)
+    # print(s_alice)
+    # print(s_mallory)
+    assert s_alice == s_mallory == s_bob
+
+    shared_key = s_mallory.to_bytes((s_alice.bit_length() + 7) // 8, byteorder='big')
+    aes_key = SHA256.new(shared_key).digest()[:16]
+
+    # print(aes_key)
+
+    # return the secret key
+    return aes_key
 
 
 # Encrypt a message with AES-CBC, Make sure padded, Can use builtin
@@ -111,15 +138,24 @@ def decrypt(encrypted_message, key):
 
 
 if __name__ == '__main__':
-    print("-------------------- Task 1 --------------------")
+    print("-------------------- Task 1.0 --------------------")
     alice_message = "Hello Bob!"
     aes_key = task1()
     encrypted_message = encrypt(alice_message, aes_key)
     decrypted_message = decrypt(encrypted_message, aes_key)
     print("Decrypted message: " + decrypted_message)
 
-    print("\n-------------------- Task 2 --------------------")
+    print("\n-------------------- Task 2.1 --------------------")
     aes_key2 = task2_1()
+    encrypted_message = encrypt(alice_message, aes_key2)
+    decrypted_message = decrypt(encrypted_message, aes_key2)
+    print("Mallory decrypts message: " + decrypted_message)
+
+    print("\n-------------------- Task 2.1 --------------------")
+    aes_key3 = task2_2()
+    encrypted_message = encrypt(alice_message, aes_key3)
+    decrypted_message = decrypt(encrypted_message, aes_key3)
+    print("Mallory decrypts message: " + decrypted_message)
 
 
 # Task 2, Man in the Middle attack. Mallory gets in the middle, sends Q to Bob
