@@ -15,6 +15,7 @@ q = 0xB10B8F96A080E01DDE92DE5EAE5D54EC52C99FBCFB06A3C69A6A9DCA52D23B616073E28675
 alpha = 0xA4D1CBD5C3FD34126765A442EFB99905F8104DD258AC507FD6406CFF14266D31266FEA1E5C41564B777E690F5504F213160217B4B01B886A5E91547F9E2749F4D7FBD7D3B9A92EE1909D0D2263F80A76A6A24C087A091F531DBF0A0169B6A28AD662A4D18E73AFA32D779D5918D08BC8858F4DCEF97C2A24855E6EEB22B3B2E5
 
 
+# regular Diffie-Hellman key exchange to get same secret key
 def task1():
     # Create Private Keys, chosen randomly and less than q
     bob_private_key = os.urandom(16)
@@ -44,6 +45,7 @@ def task1():
     return aes_key
 
 
+# man in the middle attack; public key transmission attack swapping for q
 def task2_1():
     # Create Private Keys, chosen randomly and less than q
     bob_private_key = os.urandom(16)
@@ -80,6 +82,7 @@ def task2_1():
     return aes_key
 
 
+# man in the middle attack; swap alpha for 1
 def task2_2():
     # second part of task 2 where mallory tampers with alpha
     # alpha = 1
@@ -112,7 +115,8 @@ def task2_2():
     return aes_key
 
 
-def task3(M: int):
+# regular rsa encryption and decryption of M
+def task3_1(M: int):
     e = 65537
     prime_size = 2048
     prime1 = number.getPrime(prime_size)
@@ -128,6 +132,12 @@ def task3(M: int):
     decryption = pow(cipher, d, n)
 
     return decryption
+
+
+# man in the middle attack
+def task3_2():
+
+    return
 
 
 
@@ -182,7 +192,7 @@ if __name__ == '__main__':
 
     print("\n-------------------- Task 3.1 --------------------")
     print("Message sent: 333")
-    decrypted_message = task3(333)
+    decrypted_message = task3_1(333)
     print("Encrypted and then decrypted message: " + str(decrypted_message))
 
 
