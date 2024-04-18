@@ -7,11 +7,13 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import unpad
 from urllib.parse import quote
+from Crypto.Util import number
 import os
 
 # Define q and alpha
 q = 0xB10B8F96A080E01DDE92DE5EAE5D54EC52C99FBCFB06A3C69A6A9DCA52D23B616073E28675A23D189838EF1E2EE652C013ECB4AEA906112324975C3CD49B83BFACCBDD7D90C4BD7098488E9C219A73724EFFD6FAE5644738FAA31A4FF55BCCC0A151AF5F0DC8B4BD45BF37DF365C1A65E68CFDA76D4DA708DF1FB2BC2E4A4371
 alpha = 0xA4D1CBD5C3FD34126765A442EFB99905F8104DD258AC507FD6406CFF14266D31266FEA1E5C41564B777E690F5504F213160217B4B01B886A5E91547F9E2749F4D7FBD7D3B9A92EE1909D0D2263F80A76A6A24C087A091F531DBF0A0169B6A28AD662A4D18E73AFA32D779D5918D08BC8858F4DCEF97C2A24855E6EEB22B3B2E5
+
 
 def task1():
     # Create Private Keys, chosen randomly and less than q
@@ -40,6 +42,7 @@ def task1():
 
     # print(aes_key)
     return aes_key
+
 
 def task2_1():
     # Create Private Keys, chosen randomly and less than q
@@ -109,6 +112,25 @@ def task2_2():
     return aes_key
 
 
+def task3(M: int):
+    e = 65537
+    prime_size = 2048
+    prime1 = number.getPrime(prime_size)
+    prime2 = number.getPrime(prime_size)
+
+    n = prime1 * prime2
+    phi = (prime1 - 1) * (prime2 - 1)
+
+    d = pow(e, -1, phi)
+
+    cipher = pow(M, e, n)
+
+    decryption = pow(cipher, d, n)
+
+    return decryption
+
+
+
 # Encrypt a message with AES-CBC, Make sure padded, Can use builtin
 def encrypt(message, key):
     # Convert String to bytes
@@ -140,9 +162,10 @@ def decrypt(encrypted_message, key):
 if __name__ == '__main__':
     print("-------------------- Task 1.0 --------------------")
     alice_message = "Hello Bob!"
-    aes_key = task1()
-    encrypted_message = encrypt(alice_message, aes_key)
-    decrypted_message = decrypt(encrypted_message, aes_key)
+    aes_key1 = task1()
+    encrypted_message = encrypt(alice_message, aes_key1)
+    decrypted_message = decrypt(encrypted_message, aes_key1)
+    print("Normal message encryption with no middle tampering...")
     print("Decrypted message: " + decrypted_message)
 
     print("\n-------------------- Task 2.1 --------------------")
@@ -156,6 +179,11 @@ if __name__ == '__main__':
     encrypted_message = encrypt(alice_message, aes_key3)
     decrypted_message = decrypt(encrypted_message, aes_key3)
     print("Mallory decrypts message: " + decrypted_message)
+
+    print("\n-------------------- Task 3.1 --------------------")
+    print("Message sent: 333")
+    decrypted_message = task3(333)
+    print("Encrypted and then decrypted message: " + str(decrypted_message))
 
 
 # Task 2, Man in the Middle attack. Mallory gets in the middle, sends Q to Bob
