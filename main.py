@@ -135,9 +135,41 @@ def task3_1(M: int):
 
 
 # man in the middle attack
-def task3_2():
+def task3_2(M: int):
+    e = 65537
+    prime_size = 2048
+    prime1 = number.getPrime(prime_size)
+    prime2 = number.getPrime(prime_size)
 
-    return
+    n = prime1 * prime2
+
+    # Calculate multiplicative inverse for decription
+    phi = (prime1 - 1) * (prime2 - 1)
+    d = pow(e, -1, phi)
+
+    # convert mallory_r from bytes to an int
+    mallory_r = os.urandom(256) #2048 bits
+    mallory_r = int.from_bytes(mallory_r, 'big')
+
+    # Calculate re_mod_n
+    re_mod_n = pow(mallory_r, e, n)
+
+    # Encrypt messagage with Alice's public key
+    encrypted_message = pow(M, e, n)
+
+    # Mallory creates c' that Alice will also decrypt
+    modified_ciphertext = (encrypted_message * re_mod_n) % n
+
+    # Alice decrypts the modified ciphertext c', believing it is the original c
+    alice_decrypted = pow(modified_ciphertext, d, n)
+
+    # Mallory retrieves the original message using the inverse of r
+    mallory_r_inverse = number.inverse(mallory_r, n)
+    original = (alice_decrypted * mallory_r_inverse) % n
+
+    return original
+
+
 
 
 
@@ -194,6 +226,11 @@ if __name__ == '__main__':
     print("Message sent: 333")
     decrypted_message = task3_1(333)
     print("Encrypted and then decrypted message: " + str(decrypted_message))
+
+    print("\n-------------------- Task 3.2 --------------------")
+    print("Message sent: 555")
+    decrypted_message = task3_2(555)
+    print("Original message retrieved by Mallory: " + str(decrypted_message))
 
 
 # Task 2, Man in the Middle attack. Mallory gets in the middle, sends Q to Bob
