@@ -216,7 +216,7 @@ if __name__ == '__main__':
     decrypted_message = decrypt(encrypted_message, aes_key2)
     print("Mallory decrypts message: " + decrypted_message)
 
-    print("\n-------------------- Task 2.1 --------------------")
+    print("\n-------------------- Task 2.2 --------------------")
     aes_key3 = task2_2()
     encrypted_message = encrypt(alice_message, aes_key3)
     decrypted_message = decrypt(encrypted_message, aes_key3)
