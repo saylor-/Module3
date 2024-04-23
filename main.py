@@ -231,7 +231,3 @@ if __name__ == '__main__':
     print("Message sent: 555")
     decrypted_message = task3_2(555)
     print("Original message retrieved by Mallory: " + str(decrypted_message))
-
-
-# Task 2, Man in the Middle attack. Mallory gets in the middle, sends Q to Bob
-# Then Bob sends public key to Mallory instead of Alice,
